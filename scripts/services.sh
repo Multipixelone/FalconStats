@@ -23,12 +23,28 @@ declare -a serviceName=(
 "PostgreSQL"
 "Redis"
 )
+declare -a otherServices=( # Declare services on other hosts
+"qbittorrent"
+#"openvpn"
+)
+#declare -a otherServiceLocations=( # Declare locations for the other services
+#"bit"
+#"Bagel"
+#)
+
 declare -a serviceStatus=()
 
 # Get status of all my services
 for service in "${services[@]}"
+
 do
     serviceStatus+=($(systemctl is-active "$service.service"))
+done
+
+for service in "#{otherServices[@]}"
+
+do
+    serviceStatus+=($(ssh -tt tunnel@bit 'systemctl is-active $otherServices.service'))
 done
 
 # Maximum column width
